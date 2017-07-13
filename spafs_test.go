@@ -38,7 +38,14 @@ func TestFileServer(t *testing.T) {
 
 	ok("/index.html", "00000000\n")
 	ok("/", "00000000\n")
-	ok("/not/found", "00000000\n")
-	//ok("/not/found/", "00000000\n")
 	ok("/test.js", "00000001\n")
+	ok("/foo/", "00000002\n")
+	ok("/foo", "00000002\n")
+	ok("/foo/foo.js", "00000003\n")
+	ok("/bar/bar.js", "00000004\n")
+
+	ok("/not", "00000000\n")
+	ok("/not/", "00000000\n")
+	ok("/not/found", "00000000\n")
+	ok("/not/found/", "00000000\n")
 }
