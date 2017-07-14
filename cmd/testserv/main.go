@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	err := http.ListenAndServe(":8080", spafs.FileServer(http.Dir("testdata")))
+    fs := spafs.FileServer(http.Dir("./testdata"))
+	err := http.ListenAndServe(":8080", fs)
 	if err != nil {
 		panic(err)
 	}

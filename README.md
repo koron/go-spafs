@@ -7,12 +7,18 @@ unavailable path.
 ## How to use
 
 ```go
+package main
 
 import (
-	"http"
-	spafs "github.com/koron/go-spafs"
+    "http"
+    spafs "github.com/koron/go-spafs"
 )
 
-fs := spafs.FileServer(http.Dir("./assets"))
-http.Handle("/", fs)
+func main() {
+    fs := spafs.FileServer(http.Dir("./testdata"))
+    err := http.ListenAndServe(":8080", fs)
+    if err != nil {
+        panic(err)
+    }
+}
 ```
