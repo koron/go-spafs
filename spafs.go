@@ -3,6 +3,7 @@ package spafs
 import (
 	"net/http"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -27,19 +28,27 @@ func (fh *fileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		upath = "/" + upath
 	}
 
-	for upath != "/" && upath != "" {
-		f, err := fh.root.Open(upath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				upath = cut(upath)
-				continue
-			}
-			break
-		}
+	f, err := fh.root.Open(upath)
+	if err == nil {
 		f.Close()
-		break
 	}
 
-	r.URL.Path = upath
+	// search index.html in ancestor directories and return it if exists.
+	if err != nil && os.IsNotExist(err) {
+		for upath != "/" {
+			upath = cut(upath)
+			f, err := fh.root.Open(path.Join(upath, "index.html"))
+			switch {
+			case err == nil:
+				f.Close()
+				fallthrough
+			case !os.IsNotExist(err):
+				r.URL.Path = upath
+				fh.fs.ServeHTTP(w, r)
+				return
+			}
+		}
+	}
+
 	fh.fs.ServeHTTP(w, r)
 }
