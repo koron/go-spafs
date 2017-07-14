@@ -6,6 +6,14 @@ unavailable path.
 
 ## How to use
 
+Install and update:
+
+```console
+go get -v -u github.com/koron/go-spafs
+```
+
+Example code:
+
 ```go
 package main
 
